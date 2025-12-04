@@ -1,5 +1,6 @@
 import { useDataContext } from "@/context/DataContext";
 import { formatCurrencyBR, formatNumber } from "@/utils/csv";
+import { formatPercent } from "@/utils/percent";
 
 type ProgramaAggregated = {
   receita: number;
@@ -115,14 +116,10 @@ const ProgramasPage = () => {
                         {ticket > 0 ? formatCurrencyBR(ticket) : "—"}
                       </td>
                       <td className="px-3 py-1.5 text-right">
-                        {impactoMedio
-                          ? `${formatNumber(impactoMedio)}%`
-                          : "—"}
+                        {impactoMedio ? formatPercent(impactoMedio) : "—"}
                       </td>
                       <td className="px-3 py-1.5 text-right">
-                        {roiMedio
-                          ? `${formatNumber(roiMedio)}%`
-                          : "—"}
+                        {roiMedio ? formatPercent(roiMedio) : "—"}
                       </td>
                     </tr>
                   );

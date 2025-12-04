@@ -1,5 +1,6 @@
 import { useDataContext } from "@/context/DataContext";
 import { formatCurrencyBR, formatNumber } from "@/utils/csv";
+import { formatPercent } from "@/utils/percent";
 
 const CriativosPage = () => {
   const { rows } = useDataContext();
@@ -63,7 +64,7 @@ const CriativosPage = () => {
                 <div>
                   <p className="text-slate-400">ROI</p>
                   <p className="font-semibold text-emerald-300">
-                    {r.roi ? `${formatNumber(r.roi)}%` : "—"}
+                    {r.roi ? formatPercent(r.roi) : "—"}
                   </p>
                 </div>
               </div>
@@ -113,7 +114,7 @@ const CriativosPage = () => {
                     {r.cpl > 0 ? formatCurrencyBR(r.cpl) : "—"}
                   </td>
                   <td className="px-3 py-1.5 text-right">
-                    {r.roi ? formatNumber(r.roi) : "—"}
+                    {r.roi ? formatPercent(r.roi) : "—"}
                   </td>
                 </tr>
               ))}

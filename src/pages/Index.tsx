@@ -5,6 +5,7 @@ import {
   formatCurrencyBR,
   formatNumber,
 } from "@/utils/csv";
+import { formatPercent } from "@/utils/percent";
 
 const Index = () => {
   const { rawCsv, setCsv, rows, metrics } = useDataContext();
@@ -100,7 +101,7 @@ const Index = () => {
           <p className="text-xs text-slate-300">ROI médio (programas)</p>
           <p className="mt-2 text-lg font-semibold text-emerald-300">
             {localMetrics.roiMedio
-              ? `${formatNumber(localMetrics.roiMedio)}%`
+              ? formatPercent(localMetrics.roiMedio)
               : "—"}
           </p>
         </div>
@@ -116,7 +117,7 @@ const Index = () => {
               <p className="text-slate-200">ICIA</p>
               <p className="mt-1 text-lg font-semibold text-emerald-100">
                 {localMetrics.impactoIcia
-                  ? `${formatNumber(localMetrics.impactoIcia)}%`
+                  ? formatPercent(localMetrics.impactoIcia)
                   : "—"}
               </p>
             </div>
@@ -124,7 +125,7 @@ const Index = () => {
               <p className="text-slate-200">COPA</p>
               <p className="mt-1 text-lg font-semibold text-emerald-100">
                 {localMetrics.impactoCopa
-                  ? `${formatNumber(localMetrics.impactoCopa)}%`
+                  ? formatPercent(localMetrics.impactoCopa)
                   : "—"}
               </p>
             </div>
