@@ -15,6 +15,15 @@ function toNumberSafe(value: string | null | undefined): number {
   return Number.isFinite(n) ? n : 0;
 }
 
+// Normaliza percentuais para base 0–1:
+// - se estiver em 0–1 (0.15) mantém
+// - se estiver em 0–100 (15) converte para 0.15
+function normalizePercentBase01(raw: string | null | undefined): number {
+  const n = toNumberSafe(raw);
+  if (!Number.isFinite(n) || n === 0) return 0;
+  return n > 1 ? n / 100 : n;
+}
+
 export function parseCsv(text: string): CsvRow[] {
   const lines = text
     .split(/\r?\n/)
@@ -40,22 +49,30 @@ export function parseCsv(text: string): CsvRow[] {
       subcategoria: raw.subcategoria ?? "",
       criativo: raw.criativo ?? "",
       descricao: raw.descricao ?? "",
+
       investimento: toNumberSafe(raw.investimento),
       receita: toNumberSafe(raw.receita),
+
       impressoes: toNumberSafe(raw.impressoes),
       cliques: toNumberSafe(raw.cliques),
       visitas_lp: toNumberSafe(raw.visitas_lp),
       leads: toNumberSafe(raw.leads),
+
       conversoes_whatsapp: toNumberSafe(raw.conversoes_whatsapp),
       conversoes_formulario: toNumberSafe(raw.conversoes_formulario),
+
       vendas: toNumberSafe(raw.vendas),
+
       cpc: toNumberSafe(raw.cpc),
       cpl: toNumberSafe(raw.cpl),
       cpm: toNumberSafe(raw.cpm),
-      conversao_lp_pct: toNumberSafe(raw.conversao_lp_pct),
-      roi: toNumberSafe(raw.roi),
+
+      // Estes dois sempre ficarão em base 0–1 internamente
+      conversao_lp_pct: normalizePercentBase01(raw.conversao_lp_pct),
+      roi: normalizePercentBase01(raw.roi),
       roas: toNumberSafe(raw.roas),
-      impacto_pct: toNumberSafe(raw.impacto_pct),
+      impacto_pct: normalizePercentBase01(raw.impacto_pct),
+
       fase: raw.fase ?? "",
     };
 
@@ -84,7 +101,8 @@ export function computeExecutiveMetrics(rows: CsvRow[]): ExecutiveMetrics {
     .filter(isMidia)
     .reduce((acc, r) => acc + r.leads, 0);
 
-  const cplMedio = leadsMidia > 0 ? investimentoMidia / leadsMidia : 0;
+  const cplMedio =
+    leadsMidia > 0 ? investimentoMidia / leadsMidia : 0;
 
   const vendasProgramas = rows
     .filter(isPrograma)
@@ -93,6 +111,7 @@ export function computeExecutiveMetrics(rows: CsvRow[]): ExecutiveMetrics {
   const ticketMedio =
     vendasProgramas > 0 ? receitaProgramas / vendasProgramas : 0;
 
+  // ROI já está normalizado em 0–1 aqui
   const roiValues = rows
     .filter(isPrograma)
     .map((r) => r.roi)
@@ -103,6 +122,7 @@ export function computeExecutiveMetrics(rows: CsvRow[]): ExecutiveMetrics {
       ? roiValues.reduce((a, b) => a + b, 0) / roiValues.length
       : 0;
 
+  // Impacto também já está em 0–1
   const impactoIciaValues = rows
     .filter(
       (r) =>
